@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 //this allows use of backbutton to get back to home screen
                 Toast.makeText(this, "Sign in cancelled!", Toast.LENGTH_SHORT).show();
                 finish();
-            } else if (requestCode == RC_PHOTO_PICKER && resultCode== RESULT_OK) {
+            } else if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
                 Uri selectedImageUri = data.getData();
                 //Get a reference to store file at chat_photos/<FILENAME>
                 StorageReference photoRef = mChatPhotosStorageReference.child(selectedImageUri.getLastPathSegment());
@@ -196,9 +196,12 @@ public class MainActivity extends AppCompatActivity {
                         this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                
+                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                FriendlyMessage friendlyMessage =
+                                        new FriendlyMessage(null, mUsername, downloadUrl.toString());
+                                mMessagesDatabaseReference.push().setValue(friendlyMessage);
                             }
-                        }
+                        });
             }
         }
     }
